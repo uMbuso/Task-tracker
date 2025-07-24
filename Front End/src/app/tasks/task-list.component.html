@@ -1,0 +1,65 @@
+<div class="container">
+  <div class="header">
+    <h1>Task Tracker</h1>
+    <p>Stay organized and productive with your daily tasks</p>
+  </div>
+
+  <div class="task-controls">
+    <div class="add-task-form">
+      <input type="text" class="task-input" placeholder="Add a new task..." 
+             [(ngModel)]="newTaskText" (keyup.enter)="addTask()">
+      <button class="add-btn" (click)="addTask()">Add Task</button>
+    </div>
+    
+    <div class="filters">
+      <button class="filter-btn" [class.active]="currentFilter === 'all'" 
+              (click)="filterTasks('all')">All</button>
+      <button class="filter-btn" [class.active]="currentFilter === 'active'" 
+              (click)="filterTasks('active')">Active</button>
+      <button class="filter-btn" [class.active]="currentFilter === 'completed'" 
+              (click)="filterTasks('completed')">Completed</button>
+    </div>
+  </div>
+
+  <div class="task-list">
+    <ng-container *ngIf="filteredTasks.length; else emptyState">
+      <div *ngFor="let task of filteredTasks" 
+           class="task-item"
+           [class.completed]="task.completed"
+           [attr.data-priority]="task.priority">
+        
+        <div class="task-content">
+          <div class="task-checkbox" 
+               [class.checked]="task.completed"
+               (click)="toggleTask(task.id)">
+          </div>
+          
+          <div class="task-text" [class.completed]="task.completed">
+            {{ task.text }}
+          </div>
+          
+          <div class="task-actions">
+            <button class="action-btn" (click)="deleteTask(task.id)">Delete</button>
+          </div>
+        </div>
+        
+        <div class="task-meta">
+          <span class="task-priority" 
+                [class.priority-high]="task.priority === 'high'"
+                [class.priority-medium]="task.priority === 'medium'"
+                [class.priority-low]="task.priority === 'low'">
+            {{ task.priority | titlecase }} Priority
+          </span>
+          <span>{{ task.due }}</span>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #emptyState>
+      <div class="empty-state">
+        <h3>No tasks found</h3>
+        <p>Add a new task or change your filter</p>
+      </div>
+    </ng-template>
+  </div>
+</div>
